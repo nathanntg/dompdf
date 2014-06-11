@@ -527,14 +527,20 @@ class Page_Frame_Decorator extends Frame_Decorator {
     
     // If we are in a table, backtrack to the nearest top-level table row
     if ( $this->_in_table ) {
+	  $num_tables = $this->_in_table - 1;
+
       $iter = $frame;
+	  while ($iter && $num_tables && $iter->get_style()->display !== "table" ) {
+		$iter = $iter->get_parent();
+		--$num_tables;
+	  }
+
+	  $iter = $frame;
       while ($iter && $iter->get_style()->display !== "table-row")
         $iter = $iter->get_parent();
-      
-      $iter->split(null, true);
-    } else {
-      $frame->split(null, true);
     }
+
+	$frame->split(null, true);
     
     $this->_page_full = true;
     $frame->_already_pushed = true;
