@@ -535,12 +535,14 @@ class Page_Frame_Decorator extends Frame_Decorator {
 		--$num_tables;
 	  }
 
-	  $iter = $frame;
+	  //$iter = $frame;
       while ($iter && $iter->get_style()->display !== "table-row")
         $iter = $iter->get_parent();
-    }
 
-	$frame->split(null, true);
+      $iter->split(null, true);
+    } else {
+      $frame->split(null, true);
+    }
     
     $this->_page_full = true;
     $frame->_already_pushed = true;
