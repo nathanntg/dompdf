@@ -420,6 +420,7 @@ class Cpdf {
           case 'CenterWindow':
           case 'NonFullScreenPageMode':
           case 'Direction':
+          case 'PrintScaling':
             $o['info'][$k] = $v;
             break;
         }
@@ -565,6 +566,10 @@ class Cpdf {
       $this->currentPageSize = array('width' => $options[2], 'height' => $options[3]);
       break;
 
+	case 'cropBox':
+      $o['info']['cropBox'] = $options;
+      break;
+
     case 'font':
       $o['info']['fonts'][] = array('objNum' => $options['objNum'], 'fontNum' => $options['fontNum']);
       break;
@@ -623,6 +628,10 @@ class Cpdf {
           if (isset($o['info']['mediaBox'])) {
             $tmp = $o['info']['mediaBox'];
             $res.= "\n/MediaBox [".sprintf('%.3F %.3F %.3F %.3F', $tmp[0], $tmp[1], $tmp[2], $tmp[3]) .']';
+          }
+          if (isset($o['info']['cropBox'])) {
+            $tmp = $o['info']['cropBox'];
+            $res.= "\n/CropBox [".sprintf('%.3F %.3F %.3F %.3F', $tmp[0], $tmp[1], $tmp[2], $tmp[3]) .']';
           }
         }
 
@@ -3803,6 +3812,13 @@ EOT;
       $this->o_catalog($this->catalogId, 'viewerPreferences', array($label => $value));
     }
   }
+
+   /**
+    * set the viewer preferences of the document, it is up to the browser to obe
+    */
+   function setBox($dimensions, $type='media') {
+        $this->o_pages(3, $type . 'Box', $dimensions);
+   }
 
   /**
    * extract an integer from a position in a byte stream

@@ -585,11 +585,19 @@ class Page extends AbstractFrameDecorator
         // No valid page break found.  Just break at $frame.
         Helpers::dompdf_debug("page-break", "no valid break found, just splitting.");
 
-        // If we are in a table, backtrack to the nearest top-level table row
-        if ($this->_in_table) {
-            $iter = $frame;
-            while ($iter && $iter->get_style()->display !== "table-row")
-                $iter = $iter->get_parent();
+	    // If we are in a table, backtrack to the nearest top-level table row
+	    if ( $this->_in_table ) {
+		    $num_tables = $this->_in_table - 1;
+
+		    $iter = $frame;
+		    while ($iter && $num_tables && $iter->get_style()->display !== "table") {
+			    $iter = $iter->get_parent();
+			    --$num_tables;
+		    }
+
+		    //$iter = $frame;
+		    while ($iter && $iter->get_style()->display !== "table-row")
+			    $iter = $iter->get_parent();
 
             $iter->split(null, true);
         } else {
