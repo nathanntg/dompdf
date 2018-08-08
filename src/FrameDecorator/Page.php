@@ -284,7 +284,7 @@ class Page extends AbstractFrameDecorator
         if (in_array($display, $block_types)) {
 
             // Avoid breaks within table-cells
-            if ($this->_in_table) {
+            if ($this->_in_table && ($this->_in_table > 1 || $display !== "table")) {
                 Helpers::dompdf_debug("page-break", "In table: " . $this->_in_table);
 
                 return false;
